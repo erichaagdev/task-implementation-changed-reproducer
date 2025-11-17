@@ -1,0 +1,23 @@
+name: Build
+
+on: [ push, workflow_dispatch ]
+
+env:
+  DEVELOCITY_ACCESS_KEY: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest ]
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
+        with:
+          distribution: zulu
+          java-version: 17
+      - run: ./gradlew build
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+      - run: .\gradlew.bat build
+        if: ${{ matrix.os == 'windows-latest' }}
